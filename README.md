@@ -55,7 +55,7 @@ graph TD
 | `capture` | `CameraDevice`, `GstPipeline` | 장치 탐색, 프레임 캡처 스트림 |
 | `control` | `ParamMap`, `set_param(id,val)` | 슬라이더 ↔ V4L2/SDK 매핑 |
 | `metric` | `calc_mtf50`, `calc_snr`, `detect_flicker` | 정량 지표 산출 |
-| `ui` | `MainWindow`, `CompareDock` | Qt 위젯, 단축키, 히스토그램 |
+| `ui` | `MainWindow`, `CompareDock` | Qt 위젯, Split-view 및 MTF50 표시 |
 | `report` | `render_html`, `export_pdf` | 세션 요약 저장 |
 | `preset` | `save_json`, `load_json` | 파라미터 프리셋 관리 |
 
