@@ -17,6 +17,8 @@ from PySide6.QtWidgets import (
 )
 
 from cam_tuner_gui.metric.metrics import calc_snr
+from cam_tuner_gui.capture.device import CameraDevice
+from cam_tuner_gui.control.params import set_param
 
 
 class MainWindow(QMainWindow):
@@ -54,11 +56,17 @@ class MainWindow(QMainWindow):
         self._exp_slider.setValue(100)
         self._gain_slider = QSlider(Qt.Horizontal)
         self._gain_slider.setRange(0, 255)
+        self._ae_combo = QComboBox()
+        self._ae_combo.addItems(["Auto", "Manual"])
+        self._ae_mode_label = QLabel("AE Mode: Auto")
         controls_col = QVBoxLayout()
         controls_col.addWidget(QLabel("Exposure"))
         controls_col.addWidget(self._exp_slider)
         controls_col.addWidget(QLabel("Gain"))
         controls_col.addWidget(self._gain_slider)
+        controls_col.addWidget(QLabel("Auto Exposure"))
+        controls_col.addWidget(self._ae_combo)
+        controls_col.addWidget(self._ae_mode_label)
 
         self._snapshot_btn = QPushButton("Snapshot")
         self._export_btn = QPushButton("Export Report")
@@ -82,6 +90,9 @@ class MainWindow(QMainWindow):
         self._start_btn.clicked.connect(self._start_stream)
         self._stop_btn.clicked.connect(self._stop_stream)
         self._snapshot_btn.clicked.connect(self._take_snapshot)
+        self._ae_combo.currentTextChanged.connect(self._apply_auto_exposure)
+        self._exp_slider.valueChanged.connect(self._apply_exposure)
+        self._gain_slider.valueChanged.connect(self._apply_gain)
 
     def _ndarray_to_pixmap(self, frame) -> QPixmap:
         height, width = frame.shape[:2]
@@ -105,6 +116,9 @@ class MainWindow(QMainWindow):
             device_id = self._device_combo.currentText()
             self.device = CameraDevice(device_id)
         self.device.start_stream()
+        self._apply_auto_exposure()
+        self._apply_exposure(self._exp_slider.value())
+        self._apply_gain(self._gain_slider.value())
         self._timer.start(30)
 
     def _stop_stream(self) -> None:
@@ -117,6 +131,21 @@ class MainWindow(QMainWindow):
             return
         frame = self.device.read_frame()
         self._snapshot_label.setPixmap(self._ndarray_to_pixmap(frame))
+
+    def _apply_exposure(self, value: int) -> None:
+        if self.device and self.device.cap and self.device.cap.isOpened():
+            set_param(self.device.cap, "exposure_abs", value)
+
+    def _apply_gain(self, value: int) -> None:
+        if self.device and self.device.cap and self.device.cap.isOpened():
+            set_param(self.device.cap, "gain", value)
+
+    def _apply_auto_exposure(self) -> None:
+        mode = self._ae_combo.currentText()
+        value = 0 if mode == "Auto" else 1
+        if self.device and self.device.cap and self.device.cap.isOpened():
+            set_param(self.device.cap, "auto_exposure", value)
+        self._ae_mode_label.setText(f"AE Mode: {mode}")
 
     def show(self) -> None:
         super().show()

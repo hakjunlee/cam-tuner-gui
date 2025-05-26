@@ -81,8 +81,6 @@ graph TD
 ## 8. UI 설계 스케치
 
 ```
-less
-CopyEdit
 ┌──────────────── MainWindow ────────────────┐
 │  Device Combo  [ Start ] [ Stop ]          │
 │────────────────────────────────────────────│
