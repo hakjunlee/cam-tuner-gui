@@ -55,3 +55,30 @@ def detect_flicker(frames) -> float:
     diffs = np.abs(np.diff(means))
     flicker = diffs.mean() / (np.mean(means) + 1e-8) * 100
     return float(flicker)
+
+
+def calc_lapvar(image) -> float:
+    """라플라시안 분산을 이용한 샤프니스 지표."""
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    lap = cv2.Laplacian(gray, cv2.CV_64F)
+    return float(lap.var())
+
+
+def calc_motion_blur_width(image) -> float:
+    """간단한 에지 전이 폭 기반 모션 블러 추정."""
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    row = gray[gray.shape[0] // 2].astype(np.float32)
+    row_blur = cv2.GaussianBlur(row.reshape(1, -1), (9, 1), 0).ravel()
+    grad = np.abs(np.gradient(row_blur))
+    if grad.max() == 0:
+        return 0.0
+    peak = np.argmax(grad)
+    thresh = grad.max() * 0.1
+    left = peak
+    while left > 0 and grad[left] > thresh:
+        left -= 1
+    right = peak
+    while right < len(grad) - 1 and grad[right] > thresh:
+        right += 1
+    width = right - left
+    return float(width)
