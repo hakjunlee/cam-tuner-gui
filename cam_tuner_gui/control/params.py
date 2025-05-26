@@ -13,6 +13,8 @@ class ParamMap:
             "exposure_abs": cv2.CAP_PROP_EXPOSURE,
             "auto_exposure": cv2.CAP_PROP_AUTO_EXPOSURE,
             "gain": cv2.CAP_PROP_GAIN,
+            "gamma": cv2.CAP_PROP_GAMMA,
+            "contrast": cv2.CAP_PROP_CONTRAST,
         }
 
     def get(self, name: str):
@@ -26,3 +28,12 @@ def set_param(capture: cv2.VideoCapture, param_id: str, value) -> None:
         raise KeyError(f"Unknown parameter: {param_id}")
     if not capture.set(prop, value):
         raise RuntimeError(f"Failed to set {param_id} to {value}")
+
+
+def get_param(capture: cv2.VideoCapture, param_id: str):
+    """현재 장치에서 주어진 파라미터 값을 읽어 반환한다."""
+    prop = ParamMap().get(param_id)
+    if prop is None:
+        raise KeyError(f"Unknown parameter: {param_id}")
+    return capture.get(prop)
+
