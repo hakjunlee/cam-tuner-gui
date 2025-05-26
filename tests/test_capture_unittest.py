@@ -39,11 +39,11 @@ class CameraDeviceTests(unittest.TestCase):
 
 class SetParamTests(unittest.TestCase):
     def test_set_param_sets_value(self):
-        cap = cv2.VideoCapture(0)
-        cap.open(0)
+        cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
         if not cap.isOpened():
             self.skipTest("Camera device 0 not available")
-        set_param(cap, "gain", 5)
+        set_param(cap, "auto_exposure", 1)
+        set_param(cap, "gain", 100)
         cap.release()
 
     def test_set_param_unknown_key(self):

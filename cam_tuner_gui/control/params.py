@@ -11,6 +11,7 @@ class ParamMap:
         """매핑 초기화."""
         self._map = {
             "exposure_abs": cv2.CAP_PROP_EXPOSURE,
+            "auto_exposure": cv2.CAP_PROP_AUTO_EXPOSURE,
             "gain": cv2.CAP_PROP_GAIN,
         }
 
