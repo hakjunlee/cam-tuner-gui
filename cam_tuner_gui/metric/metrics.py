@@ -22,7 +22,10 @@ def calc_mtf50(image) -> float:
     spec = np.abs(np.fft.rfft(row))
     if spec.size == 0:
         return 0.0
-    spec /= spec[0]
+    max_val = spec.max()
+    if max_val == 0:
+        return 0.0
+    spec /= max_val
     idx = np.searchsorted(spec, 0.5)
     if idx >= spec.size:
         idx = spec.size - 1
