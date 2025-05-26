@@ -21,3 +21,4 @@ class GstPipeline:
         """파이프라인을 정지한다."""
         if self.cap.isOpened():
             self.cap.release()
+
