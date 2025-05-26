@@ -5,7 +5,6 @@ from __future__ import annotations
 import numpy as np
 import cv2
 
-
 def calc_mtf50(image) -> float:
     """이미지로부터 MTF50을 계산한다.
 
@@ -29,10 +28,8 @@ def calc_mtf50(image) -> float:
         idx = spec.size - 1
     return float(idx / len(row))
 
-
 def calc_snr(image) -> float:
     """이미지의 신호 대 잡음비(SNR)를 계산한다."""
-
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     data = gray.astype(np.float32)
     mean = float(data.mean())
@@ -42,10 +39,8 @@ def calc_snr(image) -> float:
     snr = 20 * np.log10(mean / (std + 1e-8))
     return float(snr)
 
-
 def detect_flicker(frames) -> float:
     """프레임 시퀀스에서 플리커율을 계산한다."""
-
     if not frames:
         return 0.0
 

@@ -2,20 +2,23 @@
 
 from __future__ import annotations
 
+import cv2
+
 class GstPipeline:
     """캡처를 위한 GStreamer 파이프라인을 관리한다."""
 
     def __init__(self, pipeline_desc: str) -> None:
         """파이프라인 문자열을 받아 초기화."""
-        # TODO: 파이프라인 초기화 구현
-        pass
+        self.pipeline_desc = pipeline_desc
+        self.cap = cv2.VideoCapture(pipeline_desc, cv2.CAP_GSTREAMER)
 
     def play(self) -> None:
         """파이프라인을 실행한다."""
-        # TODO: play 로직 구현
-        pass
+        if not self.cap.isOpened():
+            self.cap.open(self.pipeline_desc, cv2.CAP_GSTREAMER)
 
     def stop(self) -> None:
         """파이프라인을 정지한다."""
-        # TODO: stop 로직 구현
-        pass
+        if self.cap.isOpened():
+            self.cap.release()
+

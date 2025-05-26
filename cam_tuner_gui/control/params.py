@@ -2,20 +2,27 @@
 
 from __future__ import annotations
 
+import cv2
+
 class ParamMap:
     """슬라이더와 디바이스 파라미터 사이의 매핑을 관리한다."""
 
     def __init__(self) -> None:
         """매핑 초기화."""
-        # TODO: 매핑 구조 초기화
-        pass
+        self._map = {
+            "exposure_abs": cv2.CAP_PROP_EXPOSURE,
+            "auto_exposure": cv2.CAP_PROP_AUTO_EXPOSURE,
+            "gain": cv2.CAP_PROP_GAIN,
+        }
 
     def get(self, name: str):
         """파라미터 정보를 반환한다."""
-        # TODO: 매핑 조회 로직
-        pass
+        return self._map.get(name)
 
-def set_param(param_id: str, value) -> None:
+def set_param(capture: cv2.VideoCapture, param_id: str, value) -> None:
     """주어진 파라미터 ID에 값을 설정한다."""
-    # TODO: 장치 파라미터 설정 구현
-    pass
+    prop = ParamMap().get(param_id)
+    if prop is None:
+        raise KeyError(f"Unknown parameter: {param_id}")
+    if not capture.set(prop, value):
+        raise RuntimeError(f"Failed to set {param_id} to {value}")
