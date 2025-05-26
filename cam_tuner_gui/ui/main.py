@@ -5,7 +5,7 @@ from __future__ import annotations
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QMainWindow, QLabel, QVBoxLayout, QWidget
 
-from ..metric.metrics import calc_snr
+from cam_tuner_gui.metric.metrics import calc_snr
 
 
 class MainWindow(QMainWindow):
@@ -37,3 +37,12 @@ class MainWindow(QMainWindow):
     def show(self) -> None:
         super().show()
         self._timer.start(1000)
+
+if __name__ == "__main__":
+    import sys
+    from PySide6.QtWidgets import QApplication
+
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec())
