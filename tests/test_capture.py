@@ -45,6 +45,8 @@ def test_set_param_sets_value():
     if not cap.isOpened():
         pytest.skip("Camera device 0 not available")
     set_param(cap, "gain", 5)
+    set_param(cap, "gamma", 100)
+    set_param(cap, "contrast", 10)
     cap.release()
 
 

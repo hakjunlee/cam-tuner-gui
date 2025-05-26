@@ -56,14 +56,38 @@ class MainWindow(QMainWindow):
         self._exp_slider.setValue(100)
         self._gain_slider = QSlider(Qt.Horizontal)
         self._gain_slider.setRange(0, 255)
+        self._gamma_slider = QSlider(Qt.Horizontal)
+        self._gamma_slider.setRange(0, 500)
+        self._contrast_slider = QSlider(Qt.Horizontal)
+        self._contrast_slider.setRange(0, 255)
         self._ae_combo = QComboBox()
         self._ae_combo.addItems(["Auto", "Manual"])
         self._ae_mode_label = QLabel("AE Mode: Auto")
         controls_col = QVBoxLayout()
         controls_col.addWidget(QLabel("Exposure"))
-        controls_col.addWidget(self._exp_slider)
+        exp_row = QHBoxLayout()
+        self._exp_value = QLabel(str(self._exp_slider.value()))
+        exp_row.addWidget(self._exp_slider)
+        exp_row.addWidget(self._exp_value)
+        controls_col.addLayout(exp_row)
         controls_col.addWidget(QLabel("Gain"))
-        controls_col.addWidget(self._gain_slider)
+        gain_row = QHBoxLayout()
+        self._gain_value = QLabel("0")
+        gain_row.addWidget(self._gain_slider)
+        gain_row.addWidget(self._gain_value)
+        controls_col.addLayout(gain_row)
+        controls_col.addWidget(QLabel("Gamma"))
+        gamma_row = QHBoxLayout()
+        self._gamma_value = QLabel("0")
+        gamma_row.addWidget(self._gamma_slider)
+        gamma_row.addWidget(self._gamma_value)
+        controls_col.addLayout(gamma_row)
+        controls_col.addWidget(QLabel("Contrast"))
+        contrast_row = QHBoxLayout()
+        self._contrast_value = QLabel("0")
+        contrast_row.addWidget(self._contrast_slider)
+        contrast_row.addWidget(self._contrast_value)
+        controls_col.addLayout(contrast_row)
         controls_col.addWidget(QLabel("Auto Exposure"))
         controls_col.addWidget(self._ae_combo)
         controls_col.addWidget(self._ae_mode_label)
@@ -93,6 +117,8 @@ class MainWindow(QMainWindow):
         self._ae_combo.currentTextChanged.connect(self._apply_auto_exposure)
         self._exp_slider.valueChanged.connect(self._apply_exposure)
         self._gain_slider.valueChanged.connect(self._apply_gain)
+        self._gamma_slider.valueChanged.connect(self._apply_gamma)
+        self._contrast_slider.valueChanged.connect(self._apply_contrast)
 
     def _ndarray_to_pixmap(self, frame) -> QPixmap:
         height, width = frame.shape[:2]
@@ -119,6 +145,8 @@ class MainWindow(QMainWindow):
         self._apply_auto_exposure()
         self._apply_exposure(self._exp_slider.value())
         self._apply_gain(self._gain_slider.value())
+        self._apply_gamma(self._gamma_slider.value())
+        self._apply_contrast(self._contrast_slider.value())
         self._timer.start(30)
 
     def _stop_stream(self) -> None:
@@ -135,10 +163,22 @@ class MainWindow(QMainWindow):
     def _apply_exposure(self, value: int) -> None:
         if self.device and self.device.cap and self.device.cap.isOpened():
             set_param(self.device.cap, "exposure_abs", value)
+        self._exp_value.setText(str(value))
 
     def _apply_gain(self, value: int) -> None:
         if self.device and self.device.cap and self.device.cap.isOpened():
             set_param(self.device.cap, "gain", value)
+        self._gain_value.setText(str(value))
+
+    def _apply_gamma(self, value: int) -> None:
+        if self.device and self.device.cap and self.device.cap.isOpened():
+            set_param(self.device.cap, "gamma", value)
+        self._gamma_value.setText(str(value))
+
+    def _apply_contrast(self, value: int) -> None:
+        if self.device and self.device.cap and self.device.cap.isOpened():
+            set_param(self.device.cap, "contrast", value)
+        self._contrast_value.setText(str(value))
 
     def _apply_auto_exposure(self) -> None:
         mode = self._ae_combo.currentText()
