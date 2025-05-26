@@ -170,8 +170,10 @@ class MainWindow(QMainWindow):
         self._snapshot_label.setPixmap(self._ndarray_to_pixmap(frame))
 
     def _apply_exposure(self, value: int) -> None:
-        if self.device and self.device.cap and self.device.cap.isOpened():
-            set_param(self.device.cap, "exposure_abs", value)
+        mode = self._ae_combo.currentText()
+        if mode == "Manual":
+            if self.device and self.device.cap and self.device.cap.isOpened():
+                set_param(self.device.cap, "exposure_abs", value)
         self._exp_value.setText(str(value))
 
     def _apply_gain(self, value: int) -> None:
@@ -191,7 +193,7 @@ class MainWindow(QMainWindow):
 
     def _apply_auto_exposure(self) -> None:
         mode = self._ae_combo.currentText()
-        value = 0 if mode == "Auto" else 1
+        value = 3 if mode == "Auto" else 1
         if self.device and self.device.cap and self.device.cap.isOpened():
             set_param(self.device.cap, "auto_exposure", value)
         self._ae_mode_label.setText(f"AE Mode: {mode}")

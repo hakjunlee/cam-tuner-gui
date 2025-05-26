@@ -10,7 +10,7 @@ def preview_camera() -> None:
         print("카메라를 열 수 없습니다.")
         return
 
-    if not cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1):
+    if not cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 3):
         print("자동 노출을 설정할 수 없습니다.")
 
     if not cap.set(cv2.CAP_PROP_GAIN, 100):
