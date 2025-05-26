@@ -19,6 +19,7 @@ from PySide6.QtWidgets import (
 from cam_tuner_gui.metric.metrics import calc_snr
 from cam_tuner_gui.capture.device import CameraDevice
 from cam_tuner_gui.control.params import set_param
+import cv2
 
 
 class MainWindow(QMainWindow):
@@ -137,16 +138,24 @@ class MainWindow(QMainWindow):
         snr = calc_snr(frame)
         self._snr_label.setText(f"SNR: {snr:.2f} dB")
 
+    def _sync_sliders_with_device(self) -> None:
+        """디바이스의 현재 파라미터 값을 읽어 슬라이더 위치를 맞춘다."""
+        if not (self.device and self.device.cap and self.device.cap.isOpened()):
+            return
+        cap = self.device.cap
+        self._exp_slider.setValue(int(cap.get(cv2.CAP_PROP_EXPOSURE)))
+        self._gain_slider.setValue(int(cap.get(cv2.CAP_PROP_GAIN)))
+        self._gamma_slider.setValue(int(cap.get(cv2.CAP_PROP_GAMMA)))
+        self._contrast_slider.setValue(int(cap.get(cv2.CAP_PROP_CONTRAST)))
+        ae_val = int(cap.get(cv2.CAP_PROP_AUTO_EXPOSURE))
+        self._ae_combo.setCurrentText("Auto" if ae_val == 0 else "Manual")
+
     def _start_stream(self) -> None:
         if self.device is None:
             device_id = self._device_combo.currentText()
             self.device = CameraDevice(device_id)
         self.device.start_stream()
-        self._apply_auto_exposure()
-        self._apply_exposure(self._exp_slider.value())
-        self._apply_gain(self._gain_slider.value())
-        self._apply_gamma(self._gamma_slider.value())
-        self._apply_contrast(self._contrast_slider.value())
+        self._sync_sliders_with_device()
         self._timer.start(30)
 
     def _stop_stream(self) -> None:

@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 import cv2
 
 from cam_tuner_gui.capture.device import CameraDevice
-from cam_tuner_gui.control.params import set_param
+from cam_tuner_gui.control.params import set_param, get_param
 
 class CameraDeviceTests(unittest.TestCase):
     def test_start_stream_opens_capture(self):
@@ -48,6 +48,16 @@ class SetParamTests(unittest.TestCase):
         set_param(cap, "contrast", 10)
         cap.release()
 
+    def test_get_param_reads_value(self):
+        cap = cv2.VideoCapture(0)
+        cap.open(0)
+        if not cap.isOpened():
+            self.skipTest("Camera device 0 not available")
+        set_param(cap, "gain", 5)
+        val = get_param(cap, "gain")
+        self.assertIsInstance(val, float)
+        cap.release()
+
     def test_set_param_unknown_key(self):
         cap = cv2.VideoCapture(0)
         with self.assertRaises(KeyError):
@@ -56,3 +66,4 @@ class SetParamTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
