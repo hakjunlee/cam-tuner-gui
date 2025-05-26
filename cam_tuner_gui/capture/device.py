@@ -23,7 +23,11 @@ class CameraDevice:
                 # treat as gstreamer pipeline
                 self.cap = cv2.VideoCapture(self.device_id, cv2.CAP_GSTREAMER)
         if not self.cap.isOpened():
-            self.cap.open(self.device_id)
+            try:
+                index = int(self.device_id)
+                self.cap.open(index)
+            except ValueError:
+                self.cap.open(self.device_id, cv2.CAP_GSTREAMER)
 
     def stop_stream(self) -> None:
         """카메라 스트림을 중지한다."""
