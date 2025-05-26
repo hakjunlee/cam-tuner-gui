@@ -7,6 +7,9 @@ from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtWidgets import QDockWidget, QLabel, QHBoxLayout, QWidget
 
 
+__all__ = ["CompareDock"]
+
+
 class CompareDock(QDockWidget):
     """두 스트림을 나란히 비교하는 도킹 위젯."""
 
@@ -56,3 +59,17 @@ class CompareDock(QDockWidget):
                 )
             pixmap = QPixmap.fromImage(qimage)
         label.setPixmap(pixmap)
+
+
+if __name__ == "__main__":
+    import sys
+    from PySide6.QtWidgets import QApplication, QMainWindow
+
+    app = QApplication(sys.argv)
+    window = QMainWindow()
+    dock = CompareDock(window)
+    window.addDockWidget(Qt.RightDockWidgetArea, dock)
+    window.resize(800, 400)
+    window.show()
+    sys.exit(app.exec())
+
