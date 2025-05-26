@@ -13,6 +13,8 @@ class ParamMap:
             "exposure_abs": cv2.CAP_PROP_EXPOSURE,
             "auto_exposure": cv2.CAP_PROP_AUTO_EXPOSURE,
             "gain": cv2.CAP_PROP_GAIN,
+            "gamma": cv2.CAP_PROP_GAMMA,
+            "contrast": cv2.CAP_PROP_CONTRAST,
         }
 
     def get(self, name: str):

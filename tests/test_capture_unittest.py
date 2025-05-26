@@ -44,6 +44,8 @@ class SetParamTests(unittest.TestCase):
             self.skipTest("Camera device 0 not available")
         set_param(cap, "auto_exposure", 1)
         set_param(cap, "gain", 100)
+        set_param(cap, "gamma", 100)
+        set_param(cap, "contrast", 10)
         cap.release()
 
     def test_set_param_unknown_key(self):
