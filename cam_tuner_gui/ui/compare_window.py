@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import List, Dict
+import glob
 
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import (
@@ -34,6 +35,16 @@ THRESHOLDS = {
 }
 
 
+def _list_devices() -> List[str]:
+    """Return available video device indices as strings."""
+    devices: List[str] = []
+    for path in sorted(glob.glob("/dev/video*")):
+        idx = path.replace("/dev/video", "")
+        if idx.isdigit():
+            devices.append(idx)
+    return devices
+
+
 class CompareWindow(QMainWindow):
     """두 카메라 성능 비교용 메인 윈도우."""
 
@@ -45,9 +56,11 @@ class CompareWindow(QMainWindow):
         self.cam2 = None
 
         self._combo1 = QComboBox()
-        self._combo1.addItem("0")
         self._combo2 = QComboBox()
-        self._combo2.addItem("1")
+
+        for dev in _list_devices():
+            self._combo1.addItem(dev)
+            self._combo2.addItem(dev)
 
         self._start1 = QPushButton("Start")
         self._stop1 = QPushButton("Stop")
