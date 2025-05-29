@@ -170,14 +170,28 @@ class CompareWindow(QMainWindow):
     def _update(self) -> None:
         if self.cam1 and self.cam1.cap and self.cam1.cap.isOpened():
             frame1 = self.cam1.read_frame()
-            self._view1.setPixmap(self._ndarray_to_pixmap(frame1))
+            pixmap1 = self._ndarray_to_pixmap(frame1)
+            if not self._view1.size().isEmpty():
+                pixmap1 = pixmap1.scaled(
+                    self._view1.size(),
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation,
+                )
+            self._view1.setPixmap(pixmap1)
             self._buffers1.append(frame1)
             if len(self._buffers1) > 10:
                 self._buffers1.pop(0)
             self._update_metrics(frame1, self.metrics1, self._buffers1)
         if self.cam2 and self.cam2.cap and self.cam2.cap.isOpened():
             frame2 = self.cam2.read_frame()
-            self._view2.setPixmap(self._ndarray_to_pixmap(frame2))
+            pixmap2 = self._ndarray_to_pixmap(frame2)
+            if not self._view2.size().isEmpty():
+                pixmap2 = pixmap2.scaled(
+                    self._view2.size(),
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation,
+                )
+            self._view2.setPixmap(pixmap2)
             self._buffers2.append(frame2)
             if len(self._buffers2) > 10:
                 self._buffers2.pop(0)
